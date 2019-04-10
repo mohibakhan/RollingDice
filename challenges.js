@@ -3,33 +3,55 @@ let scores, roundScore, activePlayer, gamePlaying;
 //Initialize
 init();
 
+let lastDice;
+
 //document.querySelector('#current-' + activePlayer).textContent = dice;
 //document.querySelector('#current-' + activePlayer).innerHTML = '<em>' + dice + '</em';
 
 document.querySelector('.btn-roll').addEventListener('click', function() {
   if (gamePlaying) {
     // Get Random number
-    let dice = Math.floor(Math.random() * 6) + 1;
+    let dice1 = Math.floor(Math.random() * 6) + 1;
+    let dice2 = Math.floor(Math.random() * 6) + 1;
 
     // Display result
-    let diceDOM = document.querySelector('.dice');
-    diceDOM.style.display = 'block';
-    diceDOM.src = 'images/dice-' + dice + '.png';
+    document.getElementById('dice-1').style.display = 'block';
+    document.getElementById('dice-2').style.display = 'block';
 
-    //Update round score if rolled number is not 1
-    if (dice !== 1) {
-      roundScore += dice;
-      document.querySelector(
-        '#current-' + activePlayer
-      ).textContent = roundScore;
-    } else {
-      //Next Player
-      nextPlayer();
-    }
+    document.getElementById('dice-1').src = 'images/dice-' + dice1 + '.png';
+    document.getElementById('dice-2').src = 'images/dice-' + dice2 + '.png';
+
+    if (dice1 !== 1 && dice2 !== 1) {
+        roundScore += dice1 + dice2;
+        document.querySelector('#current-' + activePlayer).textContent = roundScore;
+      } else {
+        //Next Player
+        nextPlayer();
+      }
+
+    //Lose score if 6 twice
+    // if(dice === 6 && lastDice === 6) {
+    //     //Player loses score
+    //     //scores[activePlayer] = 0;
+    //     document.querySelector('#score-' + activePlayer).textContent = 0;
+    //     nextPlayer();
+    // }
+    // //Update round score if rolled number is not 1
+    // else if (dice !== 1) {
+    //   roundScore += dice;
+    //   document.querySelector(
+    //     '#current-' + activePlayer
+    //   ).textContent = roundScore;
+    // } else {
+    //   //Next Player
+    //   nextPlayer();
+    // }
+
+    // //Lose all score if we roll 6 twice.
+    // lastDice = dice;
+
   }
-  else {
-      console.log(gamePlaying);
-  }
+ 
 });
 
 document.querySelector('.btn-hold').addEventListener('click', function() {
@@ -38,13 +60,24 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
     scores[activePlayer] += roundScore;
 
     //Update UI
-    document.querySelector('#score-' + activePlayer).textContent =
-      scores[activePlayer];
+    document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
+
+    var input = document.querySelector('.final-score').value;
+
+    var winningScore;
+
+    if(input) {
+        winningScore = input;
+    }
+    else {
+        winningScore = 100;
+    }
 
     //Check if Player won the game
-    if (scores[activePlayer] >= 20) {
+    if (scores[activePlayer] >= winningScore) {
       document.querySelector('#name-' + activePlayer).textContent = 'Winner';
-      document.querySelector('.dice').style.display = 'none';
+      document.getElementById('dice-1').style.display = 'none';
+      document.getElementById('dice-2').style.display = 'none';
       document
         .querySelector('.player-' + activePlayer + '-panel')
         .classList.add('winner');
@@ -72,7 +105,8 @@ function nextPlayer() {
   document.querySelector('.player-0-panel').classList.toggle('active');
   document.querySelector('.player-1-panel').classList.toggle('active');
 
-  document.querySelector('.dice').style.display = 'none';
+  document.getElementById('dice-1').style.display = 'none';
+  document.getElementById('dice-2').style.display = 'none';
 }
 
 document.querySelector('.btn-new').addEventListener('click', init);
@@ -84,8 +118,8 @@ function init() {
   gamePlaying = true;
 
   //Hide initial dice value
-  document.querySelector('.dice').style.display = 'none';
-
+  document.getElementById('dice-1').style.display = 'none';
+  document.getElementById('dice-2').style.display = 'none';
   document.getElementById('score-0').textContent = '0';
   document.getElementById('score-1').textContent = '0';
   document.getElementById('current-0').textContent = '0';
